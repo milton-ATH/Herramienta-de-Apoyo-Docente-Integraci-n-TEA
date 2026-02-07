@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Docente Pro-Inclusivo PR</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        /* Palette: "Educación Vibrante"
+           Blue: #3498db
+           Deep Navy: #2c3e50
+           Highlight Orange: #e67e22
+           Safe Teal: #1abc9c
+        */
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        h1, h2, h3 { font-family: 'Montserrat', sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%); }
+        .tab-active { border-bottom: 4px solid #e67e22; color: #e67e22; font-weight: bold; }
+        .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
+        .chart-container { position: relative; width: 100%; max-width: 650px; margin: auto; height: 350px; }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <!-- Header -->
+    <header class="gradient-bg text-white py-12 px-6 shadow-xl">
+        <div class="max-w-5xl mx-auto flex flex-col md:flex-row justify-between items-center">
+            <div class="mb-6 md:mb-0">
+                <span class="bg-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest">Puerto Rico Inclusivo</span>
+                <h1 class="text-4xl font-extrabold mt-2">Toolkit de IA para el Docente</h1>
+                <p class="text-blue-100 mt-2 text-lg">Diferenciación efectiva para estudiantes con autismo.</p>
+            </div>
+            <div class="bg-white/10 p-4 rounded-lg border border-white/20">
+                <p class="text-sm font-semibold">📍 Cumplimiento: Ley 51 & IDEA</p>
+                <p class="text-xs opacity-80 mt-1">Material alineado al currículo DEPR 2024</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Interactive Navigation -->
+    <nav class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-5xl mx-auto flex justify-around">
+            <button onclick="switchTab('simulador')" id="tab-simulador" class="py-4 px-2 md:px-6 transition-all tab-active">Simulador de Perfiles</button>
+            <button onclick="switchTab('ia-prompts')" id="tab-ia-prompts" class="py-4 px-2 md:px-6 transition-all text-gray-500">Asistente de IA</button>
+            <button onclick="switchTab('estrategias')" id="tab-estrategias" class="py-4 px-2 md:px-6 transition-all text-gray-500">Estrategias PR</button>
+        </div>
+    </nav>
+
+    <main class="max-w-5xl mx-auto p-6 mt-8">
+
+        <!-- SECTION 1: SIMULADOR -->
+        <div id="section-simulador" class="space-y-8">
+            <div class="bg-white p-8 rounded-2xl shadow-md border border-gray-100">
+                <h2 class="text-2xl font-bold mb-4 flex items-center">
+                    <span class="mr-2">🧩</span> Simulador de Adaptación Curricular
+                </h2>
+                <p class="text-gray-600 mb-6">Selecciona el perfil de un estudiante para visualizar cómo la IA y la diferenciación pueden ayudar.</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                    <button onclick="updateSim('sensorial')" class="p-4 rounded-xl border-2 border-blue-100 hover:border-blue-500 hover:bg-blue-50 transition-all text-left group">
+                        <p class="font-bold text-blue-600">Perfil Sensorial</p>
+                        <p class="text-xs text-gray-500 mt-1">Hipersensibilidad auditiva y visual.</p>
+                    </button>
+                    <button onclick="updateSim('hiperfoco')" class="p-4 rounded-xl border-2 border-blue-100 hover:border-blue-500 hover:bg-blue-50 transition-all text-left group">
+                        <p class="font-bold text-blue-600">Hiperfoco en Interés</p>
+                        <p class="text-xs text-gray-500 mt-1">Pasión extrema por un solo tema.</p>
+                    </button>
+                    <button onclick="updateSim('comunicacion')" class="p-4 rounded-xl border-2 border-blue-100 hover:border-blue-500 hover:bg-blue-50 transition-all text-left group">
+                        <p class="font-bold text-blue-600">Comunicación Verbal</p>
+                        <p class="text-xs text-gray-500 mt-1">Dificultad en expresión oral fluida.</p>
+                    </button>
+                </div>
+
+                <div id="sim-result" class="bg-gray-50 p-6 rounded-xl border border-dashed border-gray-300">
+                    <p class="text-center text-gray-400">Haz clic en un perfil para generar recomendaciones...</p>
+                </div>
+            </div>
+
+            <div class="bg-white p-8 rounded-2xl shadow-md">
+                <h3 class="font-bold text-lg mb-4 text-center">Frecuencia de Adaptaciones Necesarias (Estadística Local)</h3>
+                <div class="chart-container">
+                    <canvas id="freqChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 2: IA PROMPTS -->
+        <div id="section-ia-prompts" class="hidden space-y-8">
+            <div class="bg-blue-900 text-white p-8 rounded-2xl shadow-lg">
+                <h2 class="text-2xl font-bold mb-4">🤖 Biblioteca de Prompts (IA)</h2>
+                <p class="mb-6 opacity-90">Copia estos comandos y pégalos en ChatGPT para acelerar tu preparación pedagógica.</p>
+                
+                <div class="space-y-4">
+                    <!-- Prompt 1 -->
+                    <div class="bg-white/10 p-5 rounded-lg border border-white/20">
+                        <p class="text-orange-300 font-bold text-sm uppercase">Crear Historias Sociales</p>
+                        <p class="text-sm mt-2 italic text-blue-100">"Actúa como un experto en autismo. Escribe una historia social breve para un estudiante de 8 años en PR que tiene ansiedad al cambiar de la clase de Matemáticas a Educación Física."</p>
+                        <button onclick="copyText(this)" class="mt-4 bg-white text-blue-900 px-4 py-2 rounded text-xs font-bold hover:bg-orange-500 hover:text-white transition-colors">COPIAR PROMPT</button>
+                    </div>
+
+                    <!-- Prompt 2 -->
+                    <div class="bg-white/10 p-5 rounded-lg border border-white/20">
+                        <p class="text-orange-300 font-bold text-sm uppercase">Diferenciación de Lectura</p>
+                        <p class="text-sm mt-2 italic text-blue-100">"Tengo un texto sobre el Grito de Lares. Simplifica el vocabulario a un nivel de 3er grado y añade 5 apoyos visuales sugeridos para un estudiante visual."</p>
+                        <button onclick="copyText(this)" class="mt-4 bg-white text-blue-900 px-4 py-2 rounded text-xs font-bold hover:bg-orange-500 hover:text-white transition-colors">COPIAR PROMPT</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 3: ESTRATEGIAS PR -->
+        <div id="section-estrategias" class="hidden grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="bg-white p-6 rounded-2xl shadow-md">
+                <h3 class="font-bold text-xl text-blue-600 mb-4">Adaptación de Entorno (PR)</h3>
+                <div class="space-y-4">
+                    <div class="flex items-center p-3 bg-green-50 rounded-lg">
+                        <span class="text-2xl mr-3">🎧</span>
+                        <p class="text-sm text-gray-700"><strong>Zonas de Silencio:</strong> Espacios definidos en el salón para descompresión sensorial.</p>
+                    </div>
+                    <div class="flex items-center p-3 bg-green-50 rounded-lg">
+                        <span class="text-2xl mr-3">📅</span>
+                        <p class="text-sm text-gray-700"><strong>Agendas Visuales:</strong> Uso de pictogramas para anticipar la jornada escolar.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-2xl shadow-md">
+                <h3 class="font-bold text-xl text-blue-600 mb-4">Recursos del DEPR</h3>
+                <ul class="text-sm space-y-2 text-gray-600">
+                    <li>• Manual de Acomodos Razonables 2023</li>
+                    <li>• Directorio de Centros de Servicios Integrales (CSI)</li>
+                    <li>• Guía de Evaluación Alterna (GEPA)</li>
+                </ul>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // Tab Navigation
+        function switchTab(tabId) {
+            // Hide all
+            document.getElementById('section-simulador').classList.add('hidden');
+            document.getElementById('section-ia-prompts').classList.add('hidden');
+            document.getElementById('section-estrategias').classList.add('hidden');
+            
+            // Unselect tabs
+            document.getElementById('tab-simulador').className = "py-4 px-2 md:px-6 transition-all text-gray-500";
+            document.getElementById('tab-ia-prompts').className = "py-4 px-2 md:px-6 transition-all text-gray-500";
+            document.getElementById('tab-estrategias').className = "py-4 px-2 md:px-6 transition-all text-gray-500";
+
+            // Show active
+            document.getElementById('section-' + tabId).classList.remove('hidden');
+            document.getElementById('tab-' + tabId).className = "py-4 px-2 md:px-6 transition-all tab-active";
+        }
+
+        // Simulator Logic
+        function updateSim(type) {
+            const display = document.getElementById('sim-result');
+            let content = "";
+
+            if (type === 'sensorial') {
+                content = `
+                    <h4 class="font-bold text-blue-800">Estrategia: Entorno Amigable</h4>
+                    <ul class="mt-2 text-sm text-gray-700 list-disc ml-4 space-y-1">
+                        <li><strong>Acomodo:</strong> Permitir uso de audífonos con cancelación de ruido.</li>
+                        <li><strong>IA Tip:</strong> Usa herramientas de IA para convertir videos ruidosos en transcripciones de texto limpio.</li>
+                        <li><strong>Ley:</strong> Bajo Ley 51, esto es un acomodo razonable para el proceso de aprendizaje.</li>
+                    </ul>`;
+            } else if (type === 'hiperfoco') {
+                content = `
+                    <h4 class="font-bold text-blue-800">Estrategia: Motivación Intrínseca</h4>
+                    <ul class="mt-2 text-sm text-gray-700 list-disc ml-4 space-y-1">
+                        <li><strong>Acomodo:</strong> Si el interés son "Dinosaurios", usa dinosaurios para explicar conceptos de suma o historia.</li>
+                        <li><strong>IA Tip:</strong> Pide a la IA: "Crea una lección de gramática sobre verbos usando ejemplos de dinosaurios".</li>
+                        <li><strong>Diferenciación:</strong> Diferenciar por INTERÉS.</li>
+                    </ul>`;
+            } else if (type === 'comunicacion') {
+                content = `
+                    <h4 class="font-bold text-blue-800">Estrategia: Comunicación Aumentativa</h4>
+                    <ul class="mt-2 text-sm text-gray-700 list-disc ml-4 space-y-1">
+                        <li><strong>Acomodo:</strong> Uso de tarjetas PECS o aplicaciones de comunicación en tabletas.</li>
+                        <li><strong>IA Tip:</strong> Implementar aplicaciones que traduzcan imágenes a voz en tiempo real para el estudiante.</li>
+                        <li><strong>Evaluación:</strong> Permitir que el "Producto" final sea un collage o video en lugar de una presentación oral.</li>
+                    </ul>`;
+            }
+
+            display.innerHTML = content;
+            display.classList.add('bg-blue-50');
+            display.classList.remove('text-center');
+        }
+
+        // Copy function
+        function copyText(btn) {
+            const originalText = btn.innerText;
+            const prompt = btn.previousElementSibling.innerText;
+            
+            const el = document.createElement('textarea');
+            el.value = prompt;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+
+            btn.innerText = "¡COPIADO!";
+            btn.classList.add('bg-green-600');
+            setTimeout(() => {
+                btn.innerText = originalText;
+                btn.classList.remove('bg-green-600');
+            }, 2000);
+        }
+
+        // Frequency Chart
+        const ctxFreq = document.getElementById('freqChart').getContext('2d');
+        new Chart(ctxFreq, {
+            type: 'bar',
+            data: {
+                labels: [['Apoyo', 'Visual'], ['Tiempo', 'Adicional'], ['Acomodo', 'Sensorial'], ['Modificación', 'de Tarea']],
+                datasets: [{
+                    label: '% de estudiantes TEA que lo requieren',
+                    data: [88, 72, 65, 50],
+                    backgroundColor: ['#3498db', '#1abc9c', '#e67e22', '#95a5a6'],
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            title: function(tooltipItems) {
+                                return tooltipItems[0].label.replaceAll(',', ' ');
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: { max: 100 }
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>
